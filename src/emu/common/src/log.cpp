@@ -55,6 +55,7 @@ namespace eka2l1 {
 
     log_filterings::log_filterings() {
         std::fill(levels_, levels_ + LOG_CLASS_COUNT, spdlog::level::trace);
+        levels_[SERVICE_EFSRV] = spdlog::level::off;
     }
 
     bool log_filterings::set_minimum_level(const log_class cls, const spdlog::level::level_enum level) {

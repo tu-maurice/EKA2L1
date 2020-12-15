@@ -912,7 +912,7 @@ namespace eka2l1::epoc {
             return epoc::error_general;
         }
 
-        LOG_TRACE(KERNEL, "New session connected to {} with handle {}", server->name(), session_and_handle.first);
+       // LOG_TRACE(KERNEL, "New session connected to {} with handle {}", server->name(), session_and_handle.first);
         session_and_handle.second->set_associated_handle(session_and_handle.first);
 
         return session_and_handle.first;
