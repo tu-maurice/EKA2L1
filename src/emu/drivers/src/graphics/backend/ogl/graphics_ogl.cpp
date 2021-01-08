@@ -51,9 +51,12 @@ namespace eka2l1::drivers {
 
             std::int32_t ext_count = 0;
             glGetIntegerv(GL_NUM_EXTENSIONS, &ext_count);
+            
+            LOG_TRACE(DRIVER_GRAPHICS, "Total extension: {}", ext_count);
 
             for(std::int32_t i = 0; i < ext_count; i++) {
                 const GLubyte *next_extension = glGetStringi(GL_EXTENSIONS, i);
+                LOG_TRACE(DRIVER_GRAPHICS, "Extension {}: {}", i, reinterpret_cast<const char*>(next_extension));
                 auto ite = std::find_if(GL_REQUIRED_EXTENSIONS.begin(), GL_REQUIRED_EXTENSIONS.end(),
                     [next_extension](const std::string &ext) {
                         return strncmp(ext.data(), reinterpret_cast<const char*>(next_extension), ext.length()) == 0;
