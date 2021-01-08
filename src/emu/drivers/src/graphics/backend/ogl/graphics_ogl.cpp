@@ -54,8 +54,10 @@ namespace eka2l1::drivers {
 
             for(std::int32_t i = 0; i < ext_count; i++) {
                 const GLubyte *next_extension = glGetStringi(GL_EXTENSIONS, i);
-                auto ite = std::find(GL_REQUIRED_EXTENSIONS.begin(), GL_REQUIRED_EXTENSIONS.end(), 
-                    std::string(reinterpret_cast<const char*>(next_extension)));
+                auto ite = std::find_if(GL_REQUIRED_EXTENSIONS.begin(), GL_REQUIRED_EXTENSIONS.end(),
+                    [next_extension](const std::string &ext) {
+                        return strncmp(ext.data(), reinterpret_cast<const char*>(next_extension), ext.length()) == 0;
+                    });
 
                 if (ite != GL_REQUIRED_EXTENSIONS.end()) {
                     GL_REQUIRED_EXTENSIONS.erase(ite);
