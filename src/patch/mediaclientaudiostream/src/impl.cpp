@@ -43,6 +43,8 @@ void CMMFMdaOutputBufferQueue::WriteAndWait() {
         iStream->iState = EMdaStateStop;
         iCopied = NULL;
 
+        LogOut(KMcaCat, _L("Stream drained! It seems to be near destroyed"));
+   
         iStream->iCallback.MaoscPlayComplete(KErrUnderflow);
 
         iStream->RegisterNotifyBufferSent(iStatus);
@@ -173,6 +175,8 @@ CMMFMdaAudioOutputStream::CMMFMdaAudioOutputStream(MMdaAudioOutputStreamCallback
 }
 
 CMMFMdaAudioOutputStream::~CMMFMdaAudioOutputStream() {
+    LogOut(KMcaCat, _L("OK I'm gonna die bye"));
+
     iOpen.Cancel();
     iBufferQueue.Cancel();
 
@@ -189,6 +193,8 @@ CMMFMdaAudioOutputStream *CMMFMdaAudioOutputStream::NewL(MMdaAudioOutputStreamCa
 }
 
 void CMMFMdaAudioOutputStream::ConstructL() {
+    LogOut(KMcaCat, _L("I got constructed yes how do you know"));
+
     iDispatchInstance = EAudioDspOutStreamCreate(0, NULL);
 
     if (!iDispatchInstance) {
@@ -215,10 +221,13 @@ void CMMFMdaAudioOutputStream::StartRaw() {
 }
 
 void CMMFMdaAudioOutputStream::Play() {
+    LogOut(KMcaCat, _L("Start the opening! Again"));
     iOpen.Open(this);
 }
 
 void CMMFMdaAudioOutputStream::Stop() {
+    LogOut(KMcaCat, _L("STOPPED iiii"));
+
     // Reset the stat first
     EAudioDspStreamResetStat(0, iDispatchInstance);
 
