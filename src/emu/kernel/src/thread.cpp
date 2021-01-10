@@ -670,10 +670,12 @@ namespace eka2l1 {
 
         void thread::finish_logons() {
             for (auto &req : logon_requests) {
+                LOG_TRACE(KERNEL, "Logon complete for thread: {}", req.requester->name());
                 req.complete(exit_reason);
             }
 
             for (auto &req : rendezvous_requests) {
+                LOG_TRACE(KERNEL, "Rendevous complete for thread: {}", req.requester->name());
                 req.complete(exit_reason);
             }
 

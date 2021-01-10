@@ -61,6 +61,8 @@ void CMMFMdaOutputBufferQueue::WriteAndWait() {
 
     TMMFMdaBufferNode *node = iBufferNodes.First();
 
+    LogOut(KMcaCat, _L("Sending another buffer!"));
+
     iStatus = KRequestPending;
     SetActive();
 
@@ -86,6 +88,8 @@ void CMMFMdaOutputBufferQueue::RunL() {
             delete iCopied;
         }
     }
+
+    LogOut(KMcaCat, _L("Buffer sent, writing another one!"));
 
     // Stream might been canceled in buffer copied
     if ((iStatus != KErrAbort) && (iStream->iState == EMdaStatePlay)) {
