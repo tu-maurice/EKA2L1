@@ -409,6 +409,7 @@ namespace eka2l1::dispatch {
                 kernel_system *kern = info.requester->get_kernel_object_owner();
 
                 kern->lock();
+                LOG_TRACE(HLE_AUD, "Completing request with ptr address: 0x{:X}", info.sts.ptr_address());
                 info.complete(epoc::error_none);
                 kern->unlock();
             },
