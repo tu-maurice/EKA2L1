@@ -187,6 +187,7 @@ namespace eka2l1::drivers {
                     
                     const std::lock_guard<std::mutex> guard(callback_lock_);
                     if (buffer_copied_callback_) {
+                        LOG_TRACE(DRIVER_AUD, "Buffer copied callback gonna be called");
                         buffer_copied_callback_(buffer_copied_userdata_);
                     }
                 }
