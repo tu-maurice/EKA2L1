@@ -625,7 +625,7 @@ namespace eka2l1::epoc {
 
         if (msg->request_sts) {
             (msg->request_sts.get(msg->own_thr->owning_process()))->set(val, kern->is_eka1());
-            msg->own_thr->signal_request();
+            msg->own_thr->signal_request(1, "MSG COMPL");
         }
 
         if (msg->thread_handle_low) {
@@ -648,7 +648,7 @@ namespace eka2l1::epoc {
 
         if (msg->request_sts) {
             (msg->request_sts.get(msg->own_thr->owning_process()))->set(dup_handle, kern->is_eka1());
-            msg->own_thr->signal_request();
+            msg->own_thr->signal_request(1, "MSG COMPL");
         }
 
         if (kern->get_config()->log_ipc)
@@ -1396,7 +1396,7 @@ namespace eka2l1::epoc {
     }
 
     BRIDGE_FUNC(void, request_signal, std::int32_t signal_count) {
-        kern->crr_thread()->signal_request(signal_count);
+        kern->crr_thread()->signal_request(signal_count, "SIG REQUEST SVC");
     }
 
     /***********************************************/
@@ -1817,7 +1817,7 @@ namespace eka2l1::epoc {
             return;
         }
 
-        thr->signal_request();
+        thr->signal_request(1, "THR REQUEST SIGNAL");
     }
 
     BRIDGE_FUNC(std::int32_t, thread_rename, kernel::handle h, eka2l1::ptr<desc8> name_des) {
@@ -2763,7 +2763,7 @@ namespace eka2l1::epoc {
     /* ================ EKA1 ROUTES ================== */
     static void finish_status_request_eka1(kernel::thread *target_thread, epoc::request_status *sts, const std::int32_t code) {
         sts->set(code, true);
-        target_thread->signal_request();
+        target_thread->signal_request(1, "FINISH STATUS REQ");
     }
 
     static kernel::owner_type get_handle_owner_from_eka1_attribute(const std::uint32_t attrib) {
@@ -3990,7 +3990,7 @@ namespace eka2l1::epoc {
         sts->set(code, true);
         *sts_addr = 0;          // Empty out the address as the behavior in the document.
 
-        thr->signal_request();
+        thr->signal_request(1, "THREAD REQ COMPL");
     }
 
     BRIDGE_FUNC(void, process_command_line_eka1, epoc::des16 *cmd_line, kernel::handle h) {

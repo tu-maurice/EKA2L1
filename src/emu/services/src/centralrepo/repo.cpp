@@ -119,7 +119,7 @@ namespace eka2l1 {
 
             if ((key & (notify.match & notify.mask))) {
                 // Notify and delete this request from the list
-                notify.sts.complete(0);
+                notify.sts.complete(0, "CEN SUB COMPL");
                 notifies.erase(notifies.begin() + i);
             }
         }
@@ -148,7 +148,7 @@ namespace eka2l1 {
 
     void central_repo_client_subsession::cancel_all_notify_requests() {
         common::erase_elements(notifies, [=](cenrep_notify_info &info) {
-            info.sts.complete(-3);
+            info.sts.complete(-3, "CEN SUB CANCEL");
             return true;
         });
     }
@@ -156,7 +156,7 @@ namespace eka2l1 {
     void central_repo_client_subsession::cancel_notify_request(const std::uint32_t match_key, const std::uint32_t mask) {
         common::erase_elements(notifies, [=](cenrep_notify_info &info) {
             if ((info.match == match_key) && (info.mask == mask)) {
-                info.sts.complete(-3);
+                info.sts.complete(-3, "CENREP SUB CANCEL");
                 return true;
             }
 

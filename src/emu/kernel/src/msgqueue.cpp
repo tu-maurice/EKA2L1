@@ -59,14 +59,14 @@ namespace eka2l1::kernel {
             return;
         }
 
-        find_res->complete(epoc::error_cancel);
+        find_res->complete(epoc::error_cancel, "CANCEL MSG QUEUE");
         avail_notifies_.erase(find_res);
     }
 
     bool msg_queue::notify_available(epoc::notify_info &info) {
         if (!msgs_.empty()) {
             // Complete the request right away
-            info.complete(0);
+            info.complete(0, "NOTIFY AVAIL");
             return true;
         }
 
@@ -87,7 +87,7 @@ namespace eka2l1::kernel {
     bool msg_queue::notify_full(epoc::notify_info &info) {
         if (msgs_.size() == max_length_) {
             // Complete the request right away
-            info.complete(0);
+            info.complete(0, "NOTIFY FULL");
             return true;
         }
 
@@ -133,7 +133,7 @@ namespace eka2l1::kernel {
         if (msgs_.empty()) {
             // Notify all available data
             for (auto &notify : avail_notifies_) {
-                notify.complete(0);
+                notify.complete(0, "NOTIFY AVAIL");
             }
 
             if (avail_callback_.first) {
@@ -155,7 +155,7 @@ namespace eka2l1::kernel {
         if (msgs_.size() == max_length_) {
             // Notify all available data
             for (auto &notify : full_notifies_) {
-                notify.complete(0);
+                notify.complete(0, "NOTIFY FULL");
             }
         }
 

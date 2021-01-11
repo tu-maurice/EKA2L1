@@ -170,7 +170,7 @@ namespace eka2l1 {
             pack_change_buffer(change, own_pr, evt);
             sel->assign(own_pr, evt.selection_);
 
-            info.complete(epoc::error_none);
+            info.complete(epoc::error_none, "MSV LISTEN");
             return true;
         }
 
@@ -192,7 +192,7 @@ namespace eka2l1 {
             pack_change_buffer(change_, own_pr, evt);
             selection_->assign(own_pr, evt.selection_);
 
-            msv_info_.complete(epoc::error_none);
+            msv_info_.complete(epoc::error_none, "MSV QUEUE");
             return;
         }
 
@@ -273,7 +273,7 @@ namespace eka2l1 {
 
     void msv_client_session::cancel_notify_session_event(service::ipc_context *ctx) {
         if (!msv_info_.empty()) {
-            msv_info_.complete(epoc::error_cancel);
+            msv_info_.complete(epoc::error_cancel, "MSV CANCEL NOTIFY");
         }
 
         ctx->complete(epoc::error_none);

@@ -89,7 +89,7 @@ namespace eka2l1 {
 
             // Set the notifier and both the next one getting the event to cancel
             ctx->complete(epoc::error_cancel);
-            nof_info_.complete(epoc::error_cancel);
+            nof_info_.complete(epoc::error_cancel, "NO CANCEL AKNSKIN");
 
             return;
         }
@@ -113,7 +113,7 @@ namespace eka2l1 {
     void akn_skin_server_session::do_cancel(service::ipc_context *ctx) {
         // If a handler is set and no pending notifications
         if (client_handler_ && nof_list_.empty()) {
-            nof_info_.complete(epoc::error_cancel);
+            nof_info_.complete(epoc::error_cancel, "NO CANCEL AKNSKIN");
         }
 
         ctx->complete(epoc::error_none);

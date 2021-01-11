@@ -59,7 +59,7 @@ namespace eka2l1::epoc {
             , requester(requester) {
         }
 
-        void complete(int err_code);
+        void complete(int err_code, std::string from);
         void do_state(common::chunkyseri &seri);
 
         bool empty() const {

@@ -104,7 +104,7 @@ namespace eka2l1 {
 
     void etel_line_subsession::cancel_notify_status_change(service::ipc_context *ctx) {
         ctx->complete(epoc::error_none);
-        status_change_nof_.complete(epoc::error_cancel);
+        status_change_nof_.complete(epoc::error_cancel, "CANCEL NOTIFY STS LINE");
     }
 
     void etel_line_subsession::notify_incoming_call(service::ipc_context *ctx) {
@@ -113,6 +113,6 @@ namespace eka2l1 {
 
     void etel_line_subsession::cancel_notify_incoming_call(service::ipc_context *ctx) {
         ctx->complete(epoc::error_none);
-        incoming_call_nof_.complete(epoc::error_cancel);
+        incoming_call_nof_.complete(epoc::error_cancel, "CANCEL NOTIFY INCOMING CALL");
     }
 }

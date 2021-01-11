@@ -53,13 +53,13 @@ namespace eka2l1 {
                 return false;
             }
 
-            req_info_.complete(-3);
+            req_info_.complete(-3, "CHANGE NOTIF CANCEL");
 
             return true;
         }
 
         void change_notifier::notify_change_requester() {
-            req_info_.complete(0);
+            req_info_.complete(0, "NOTIFY CHANGE REQUESTER");
         }
 
         void change_notifier::do_state(common::chunkyseri &seri) {

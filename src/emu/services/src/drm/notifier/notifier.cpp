@@ -90,7 +90,7 @@ namespace eka2l1 {
 
     void drm_notifier_client_session::cancel_listen_for_event(service::ipc_context *ctx) {
         if (!notify_.empty()) {
-            notify_.complete(epoc::error_cancel);
+            notify_.complete(epoc::error_cancel, "DRM CANCEL EVENT LISTEN HIHI");
         }
 
         ctx->complete(epoc::error_none);

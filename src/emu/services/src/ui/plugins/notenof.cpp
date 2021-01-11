@@ -26,7 +26,7 @@
 namespace eka2l1::epoc::notifier {
     void note_display_plugin::handle(epoc::desc8 *request, epoc::des8 *respone, epoc::notify_info &complete_info) {
         if (outstanding_) {
-            complete_info.complete(epoc::error_in_use);
+            complete_info.complete(epoc::error_in_use, "NOTE PLUGIN IN USE");
             return;
         }
 
@@ -36,7 +36,7 @@ namespace eka2l1::epoc::notifier {
         std::uint32_t data_size = request->get_length();
 
         if (!data_ptr || !data_size) {
-            complete_info.complete(epoc::error_argument);
+            complete_info.complete(epoc::error_argument, "NOTE PLUGIN ERR ARG");
             return;
         }
 
@@ -56,13 +56,13 @@ namespace eka2l1::epoc::notifier {
                 callback_(static_cast<note_type>(type), to_display, complete_info);
                 outstanding_ = true;
             } else {
-                complete_info.complete(epoc::error_none);
+                complete_info.complete(epoc::error_none, "NOTE PLUGIN ERRNONE");
                 outstanding_ = false;
             }
         } else {
             LOG_INFO(SERVICE_UI, "Note display currently unsupported for EKA2.");
 
-            complete_info.complete(epoc::error_none);
+            complete_info.complete(epoc::error_none, "NOTE PLUGIN ERRNONE EKA2");
             outstanding_ = false;
         }
     }

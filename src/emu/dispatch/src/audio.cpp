@@ -244,7 +244,7 @@ namespace eka2l1::dispatch {
                 kernel_system *kern = info->requester->get_kernel_object_owner();
 
                 kern->lock();
-                info->complete(epoc::error_none);
+                info->complete(epoc::error_none, "AUD PLAYER COMPL");
                 kern->unlock();
 
                 eplayer->impl_->clear_notify_done();
@@ -271,7 +271,7 @@ namespace eka2l1::dispatch {
             return epoc::error_none;
         }
 
-        reinterpret_cast<epoc::notify_info *>(notify)->complete(epoc::error_cancel);
+        reinterpret_cast<epoc::notify_info *>(notify)->complete(epoc::error_cancel, "AUD PLAYER CANCEL");
         eplayer->impl_->clear_notify_done();
 
         return epoc::error_none;
@@ -410,7 +410,7 @@ namespace eka2l1::dispatch {
 
                 kern->lock();
                 LOG_TRACE(HLE_AUD, "Completing request with ptr address: 0x{:X}", info.sts.ptr_address());
-                info.complete(epoc::error_none);
+                info.complete(epoc::error_none, "AUD STREAM OUT REQ DONE");
                 kern->unlock();
             },
             stream_new.get());
@@ -532,7 +532,7 @@ namespace eka2l1::dispatch {
         ntimer *timing = sys->get_ntimer();
         const std::lock_guard<std::mutex> guard(stream->lock_);
 
-        stream->copied_info_.complete(epoc::error_cancel);
+        stream->copied_info_.complete(epoc::error_cancel, "AUD STREAM NOF CANCEL");
         return epoc::error_none;
     }
 

@@ -846,7 +846,7 @@ namespace eka2l1 {
         if (server<fbs_server>()->compressor)
             server<fbs_server>()->compressor->cancel(dirty_nof_);
         else
-            dirty_nof_.complete(epoc::error_cancel);
+            dirty_nof_.complete(epoc::error_cancel, "CANCEL NOTIFY DIRTY BITMAP :flushed:");
 
         ctx->complete(epoc::error_none);
     }

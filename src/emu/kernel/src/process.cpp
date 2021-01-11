@@ -295,7 +295,7 @@ namespace eka2l1::kernel {
             return false;
         }
 
-        find_result->complete(-3);
+        find_result->complete(-3, "LOGON PROCESS CANCEL LMAO");
         container->erase(find_result);
         return true;
     }
@@ -305,7 +305,7 @@ namespace eka2l1::kernel {
         exit_type = entity_exit_type::pending;
 
         for (auto &ren : rendezvous_requests) {
-            ren.complete(rendezvous_reason);
+            ren.complete(rendezvous_reason, "RENDEZVOUS PROCESS COMPLETE LMAO");
             LOG_TRACE(KERNEL, "Rendezvous to: {}", ren.requester->name());
         }
 
@@ -314,11 +314,11 @@ namespace eka2l1::kernel {
 
     void process::finish_logons() {
         for (auto &req : logon_requests) {
-            req.complete(exit_reason);
+            req.complete(exit_reason, "LOGON PROCESS FINISH LMAO");
         }
 
         for (auto &req : rendezvous_requests) {
-            req.complete(exit_reason);
+            req.complete(exit_reason, "RENDEZVOUS PROCESS FINISH LMAO");
         }
 
         logon_requests.clear();

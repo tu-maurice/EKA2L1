@@ -27,7 +27,7 @@ namespace eka2l1::ui::view {
     static void complete_write_and_notify_event(epoc::notify_info &info, std::uint8_t *dest_buffer,
         const view_event &evt) {
         // Just notify please
-        info.complete(0);
+        info.complete(0, "EVENT QUEUE VIEW COMPL");
 
         if (dest_buffer) {
             // Write the buffer. A step should have been done to verify buffer is sufficient

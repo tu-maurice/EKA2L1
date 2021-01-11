@@ -50,7 +50,7 @@ namespace eka2l1 {
             return;
         }
 
-        nof_.complete(epoc::error_cancel);
+        nof_.complete(epoc::error_cancel, "SHUTDOWN CANCEL NOF");
         context->complete(epoc::error_none);
     }
 

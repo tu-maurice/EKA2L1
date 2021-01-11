@@ -29,7 +29,7 @@
 namespace eka2l1::epoc::notifier {
     void keylock_plugin::handle(epoc::desc8 *request, epoc::des8 *respone, epoc::notify_info &complete_info) {
         if (!respone) {
-            complete_info.complete(epoc::error_argument);
+            complete_info.complete(epoc::error_argument, "ERR ARGUMENT KEYLOCK");
             return;
         }
 
@@ -42,7 +42,7 @@ namespace eka2l1::epoc::notifier {
         std::uint32_t given_respone_max = request->get_max_length(pr_req);
 
         if (!data_ptr || !data_size || !given_respone || !given_respone_max) {
-            complete_info.complete(epoc::error_argument);
+            complete_info.complete(epoc::error_argument, "ERR ARGUMENT KEYLOCK");
             return;
         }
 
@@ -55,7 +55,7 @@ namespace eka2l1::epoc::notifier {
             seri.absorb(signature);
 
             if (signature != AKN_NOTIFIER_SIGNATURE) {
-                complete_info.complete(epoc::error_argument);
+                complete_info.complete(epoc::error_argument, "ERR ARGUMENT KEYLOCK");
                 return;
             }
 
@@ -92,7 +92,7 @@ namespace eka2l1::epoc::notifier {
         }
 
         seri_write.absorb(enabled_bval);
-        complete_info.complete(epoc::error_none);
+        complete_info.complete(epoc::error_none, "ERR NONE KEYLOCK");
     }
 
     void keylock_plugin::cancel() {

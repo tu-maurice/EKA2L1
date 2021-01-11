@@ -34,7 +34,7 @@ namespace eka2l1 {
     void compress_queue::compress(fbsbitmap *bmp) {
         if (bmp->bitmap_->header_.compression != epoc::bitmap_file_no_compression) {
             // Why?
-            bmp->compress_done_nof.complete(0);
+            bmp->compress_done_nof.complete(0, "COMPRESS QUEUE DONE");
             return;
         }
 
@@ -161,7 +161,7 @@ namespace eka2l1 {
                 serv_->free_bitmap(clean_bitmap);
             }
 
-            bmp->compress_done_nof.complete(epoc::error_none);
+            bmp->compress_done_nof.complete(epoc::error_none, "COMPRESS QUEUE OK");
             return;
         }
 
@@ -188,14 +188,14 @@ namespace eka2l1 {
         {
             const std::lock_guard<std::mutex> guard(notify_mutex_);
             for (auto notify : notifies_) {
-                notify.complete(0);
+                notify.complete(0, "BITMAP DIRTY FROM COMPRESS");
             }
 
             notifies_.clear();
         }
 
         // Notify bitmap compression done. Now the thread can run.
-        bmp->compress_done_nof.complete(epoc::error_none);
+        bmp->compress_done_nof.complete(epoc::error_none, "BITMAP COMP DONE");
         bmp->clean_bitmap = clean_bitmap;
 
         // Mark old bitmap as dirty
@@ -228,7 +228,7 @@ namespace eka2l1 {
         }
 
         notifies_.erase(find_res);
-        nof.complete(epoc::error_cancel);
+        nof.complete(epoc::error_cancel, "BITMAP COMP CANCEL");
         return true;
     }
 }

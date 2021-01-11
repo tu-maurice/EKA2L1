@@ -129,7 +129,7 @@ namespace eka2l1 {
     }
 
     void connmonitor_client_session::cancel_receive_event(eka2l1::service::ipc_context *ctx) {
-        nof_info.complete(epoc::error_cancel);
+        nof_info.complete(epoc::error_cancel, "CANCEL REQ");
         ctx->complete(epoc::error_none);
     }
 }

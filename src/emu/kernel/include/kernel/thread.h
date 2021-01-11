@@ -323,7 +323,7 @@ namespace eka2l1 {
             bool set_initial_userdata(const address userdata);
 
             void wait_for_any_request();
-            void signal_request(int count = 1);
+            void signal_request(int count = 1, const std::string badabada = "");
             std::int32_t request_count();
 
             void set_priority(const thread_priority new_pri);

@@ -35,6 +35,8 @@
 #include <utils/reqsts.h>
 #include <kernel/ipc.h>
 
+#include <vector>
+
 namespace eka2l1 {
     namespace kernel {
         int map_thread_priority_to_calc(thread_priority pri) {
@@ -413,6 +415,9 @@ namespace eka2l1 {
             return scheduler->stop(this);
         }
 
+        std::vector<std::string> last_signals_;
+        std::vector<std::string> last_waits_;
+
         bool thread::kill(const entity_exit_type the_exit_type,  const std::u16string &category, 
             const std::int32_t reason) {
             if (state == kernel::thread_state::stop) {
@@ -456,6 +461,13 @@ namespace eka2l1 {
 
                 default:
                     return false;
+                }
+            }
+
+            if (name() == "Bounce") {
+                LOG_TRACE(KERNEL, "may lan goi la: ");
+                for (int i = 0; i < last_signals_.size(); i++) {
+                    LOG_TRACE(KERNEL, "{}", last_signals_[i]);
                 }
             }
 
@@ -509,12 +521,31 @@ namespace eka2l1 {
 
         void thread::wait_for_any_request() {
             request_sema->wait();
+
+            if (name() == "Bounce") {
+                if (last_signals_.size() == 100) {
+                    last_signals_.erase(last_signals_.begin());
+                }
+                
+                auto tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+                last_signals_.push_back("Signal Current count: " + std::to_string(request_sema->count()) + " time: " + ctime(&tt));
+            }
             //if (name() == "Bounce")
             //    LOG_TRACE(KERNEL, "My man count is currently: {} (dec)", request_sema->count());
         }
 
-        void thread::signal_request(int count) {
+        void thread::signal_request(int count, const std::string badabada) {
             request_sema->signal(count);
+
+            if (name() == "Bounce") {
+                if (last_signals_.size() == 100) {
+                    last_signals_.erase(last_signals_.begin());
+                }
+
+                auto tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+                last_signals_.push_back(badabada + " crr_count " + std::to_string(request_sema->count()) + " used count " + std::to_string(count) + " time " + ctime(&tt));
+            }
             
             //if (name() == "Bounce") {
             //    LOG_TRACE(KERNEL, "My man count is currently: {}, inc {}", request_sema->count(), count);
@@ -647,7 +678,7 @@ namespace eka2l1 {
                     [&](epoc::notify_info &form) { return form.sts.ptr_address() == logon_request.ptr_address(); });
 
                 if (req_info != rendezvous_requests.end()) {
-                    (*req_info).complete(-3);
+                    (*req_info).complete(-3, "RENDEZVOUS CANCEL");
                     rendezvous_requests.erase(req_info);
 
                     return true;
@@ -660,7 +691,7 @@ namespace eka2l1 {
                 [&](epoc::notify_info &form) { return form.sts.ptr_address() == logon_request.ptr_address(); });
 
             if (req_info != logon_requests.end()) {
-                (*req_info).complete(-3);
+                (*req_info).complete(-3, "LOGON CANCEL");
                 logon_requests.erase(req_info);
 
                 return true;
@@ -671,7 +702,7 @@ namespace eka2l1 {
 
         void thread::rendezvous(int rendezvous_reason) {
             for (auto &ren : rendezvous_requests) {
-                ren.complete(rendezvous_reason);
+                ren.complete(rendezvous_reason, "RENDEZVOUS COMPLETE");
             }
 
             rendezvous_requests.clear();
@@ -680,12 +711,12 @@ namespace eka2l1 {
         void thread::finish_logons() {
             for (auto &req : logon_requests) {
                 LOG_TRACE(KERNEL, "Logon complete for thread: {}", req.requester->name());
-                req.complete(exit_reason);
+                req.complete(exit_reason, "LOGON COMPLETE");
             }
 
             for (auto &req : rendezvous_requests) {
                 LOG_TRACE(KERNEL, "Rendevous complete for thread: {}", req.requester->name());
-                req.complete(exit_reason);
+                req.complete(exit_reason, "RENDEZVOUS COMPLETE");
             }
 
             logon_requests.clear();
@@ -746,7 +777,7 @@ namespace eka2l1 {
     }
 
     namespace epoc {
-        void notify_info::complete(int err_code) {
+        void notify_info::complete(int err_code, std::string from) {
             if (sts.ptr_address() == 0) {
                 return;
             }
@@ -756,7 +787,7 @@ namespace eka2l1 {
             sts.get(requester->owning_process())->set(err_code, kern->is_eka1());
             sts = 0;
 
-            requester->signal_request();
+            requester->signal_request(1, from);
         }
 
         void notify_info::do_state(common::chunkyseri &seri) {

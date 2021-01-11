@@ -158,7 +158,7 @@ namespace eka2l1 {
             (request_status.get(request_own_thread->owning_process()))->set(0, kern->is_eka1()); // KErrNone
 
             if (notify_owner) {
-                request_own_thread->signal_request();
+                request_own_thread->signal_request(1, "FINISH REQ LLE");
             }
 
             request_own_thread = nullptr;
@@ -188,7 +188,7 @@ namespace eka2l1 {
 
         void server::cancel_async_lle() {
             if (!request_status) {
-                request_own_thread->signal_request();
+                request_own_thread->signal_request(1, "CANCEL REQ");
                 return;
             }
 

@@ -487,7 +487,7 @@ namespace eka2l1 {
 
     void fs_server_client::notify_change_cancel(service::ipc_context *ctx) {
         for (auto it = notify_entries.begin(); it != notify_entries.end(); ++it) {
-            it->info.complete(epoc::error_cancel);
+            it->info.complete(epoc::error_cancel, "FS NOTIFY CANCEL");
         }
 
         notify_entries.clear();
@@ -499,7 +499,7 @@ namespace eka2l1 {
         for (auto it = notify_entries.begin(); it != notify_entries.end(); ++it) {
             notify_entry entry = *it;
             if (entry.info.sts.ptr_address() == request_status_addr) {
-                entry.info.complete(epoc::error_cancel);
+                entry.info.complete(epoc::error_cancel, "FS NOTIFY CANCEL");
                 notify_entries.erase(it);
                 break;
             }

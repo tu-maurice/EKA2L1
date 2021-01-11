@@ -66,7 +66,7 @@ namespace eka2l1::epoc {
     public:
         void trigger_notification() {
             if (q_.size() > 0)
-                nof.complete(0);
+                nof.complete(0, "TRIGGER NOF");
         }
 
     protected:
@@ -97,7 +97,7 @@ namespace eka2l1::epoc {
 
             if (q_.size() > 0) {
                 // Complete with KErrNone
-                nof_info.complete(0);
+                nof_info.complete(0, "QUEUE COMPLETE");
                 return;
             }
 

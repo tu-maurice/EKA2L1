@@ -82,7 +82,7 @@ namespace eka2l1 {
             }
 
             info.request_status->set(epoc::error_cancel, kern->is_eka1());
-            info.own_thread->signal_request();
+            info.own_thread->signal_request(1, "TIMER CANCEL");
 
             // If the timer hasn't finished yet, please unschedule it.
             if (outstanding) {
@@ -109,7 +109,7 @@ namespace eka2l1 {
             }
 
             info->request_status->set(0, kern->is_eka1());
-            info->own_thread->signal_request();
+            info->own_thread->signal_request(1, "TIMER COMPLETE");
 
             kern->unlock();
         }

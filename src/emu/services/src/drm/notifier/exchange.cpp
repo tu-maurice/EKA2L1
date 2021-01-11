@@ -124,7 +124,7 @@ namespace eka2l1 {
             sizeof(msg->type_));
 
         std::memcpy(to_write_data_, msg->data_.data(), msg->data_.size());
-        notify_.complete(epoc::error_none);
+        notify_.complete(epoc::error_none, "CANCEL DRM LISTEN");
 
         // Ignore result
         server<drm_notifier_server>()->release(msg);

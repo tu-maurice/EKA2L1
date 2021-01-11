@@ -220,7 +220,7 @@ namespace eka2l1 {
     }
 
     void mmf_dev_server_session::cancel_play_error(service::ipc_context *ctx) {
-        finish_info_.complete(epoc::error_cancel);
+        finish_info_.complete(epoc::error_cancel, "BUFFER FILL COMPLETE");
         ctx->complete(epoc::error_none);
     }
 
@@ -233,12 +233,12 @@ namespace eka2l1 {
             open_handle_with_thread(buffer_fill_info_.requester, buffer_chunk_, kernel::owner_type::thread);
 
         if (buf_handle == kernel::INVALID_HANDLE) {
-            buffer_fill_info_.complete(epoc::error_general);
+            buffer_fill_info_.complete(epoc::error_general, "BUFFER FILL ERR");
             return;
         }
 
         buffer_fill_buf_->chunk_op_ = epoc::mmf_dev_chunk_op_open;
-        buffer_fill_info_.complete(buf_handle);
+        buffer_fill_info_.complete(buf_handle, "BUFFER FILL COMPLETE");
     }
 
     void mmf_dev_server_session::get_buffer_to_be_filled(service::ipc_context *ctx) {
@@ -252,7 +252,7 @@ namespace eka2l1 {
         buffer_fill_buf_ = reinterpret_cast<epoc::mmf_dev_hw_buf *>(ctx->get_descriptor_argument_ptr(2));
 
         if (!buffer_fill_buf_) {
-            buffer_fill_info_.complete(epoc::error_argument);
+            buffer_fill_info_.complete(epoc::error_argument, "BUFFER FILL");
         }
     }
 

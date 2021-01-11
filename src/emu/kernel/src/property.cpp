@@ -118,13 +118,13 @@ namespace eka2l1 {
                 return false;
             }
 
-            (*subscription_iterator)->complete(epoc::error_cancel);
+            (*subscription_iterator)->complete(epoc::error_cancel, "PROP SUB CANCEL");
             return true;
         }
 
         void property::notify_request(const std::int32_t err) {
             while (auto subscription = subscription_queue.pop()) {
-                subscription.value()->complete(err);
+                subscription.value()->complete(err, "PROP SUB COMPL");
             }
         }
 

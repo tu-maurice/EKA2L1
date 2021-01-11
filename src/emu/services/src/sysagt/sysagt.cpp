@@ -157,7 +157,7 @@ namespace eka2l1 {
 
     void system_agent_session::notify_event_cancel(service::ipc_context *ctx) {
         if (!queue_.info_.woke_target_.empty()) {
-            queue_.info_.woke_target_.complete(epoc::error_cancel);
+            queue_.info_.woke_target_.complete(epoc::error_cancel, "SYSAGT CANCEL");
         }
 
         ctx->complete(epoc::error_none);
