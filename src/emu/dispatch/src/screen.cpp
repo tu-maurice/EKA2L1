@@ -49,7 +49,7 @@ namespace eka2l1::dispatch {
                 scr->vsync(sys->get_ntimer(), next_vsync_us);
 
                 if (next_vsync_us) {
-                    kern->crr_thread()->sleep(static_cast<std::uint32_t>(next_vsync_us));
+                    //kern->crr_thread()->sleep(static_cast<std::uint32_t>(next_vsync_us));
                 }
 
                 std::unique_lock<std::mutex> guard(scr->screen_mutex);
