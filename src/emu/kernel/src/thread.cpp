@@ -509,20 +509,19 @@ namespace eka2l1 {
 
         void thread::wait_for_any_request() {
             request_sema->wait();
-            
-            if (name() == "Bounce")
-                LOG_TRACE(KERNEL, "My man count is currently: {} (dec)", request_sema->count());
+            //if (name() == "Bounce")
+            //    LOG_TRACE(KERNEL, "My man count is currently: {} (dec)", request_sema->count());
         }
 
         void thread::signal_request(int count) {
             request_sema->signal(count);
             
-            if (name() == "Bounce") {
-                LOG_TRACE(KERNEL, "My man count is currently: {}, inc {}", request_sema->count(), count);
-                if (state != thread_state::run) {
-                    LOG_TRACE(KERNEL, "You will not sleep");
-                }
-            }
+            //if (name() == "Bounce") {
+            //    LOG_TRACE(KERNEL, "My man count is currently: {}, inc {}", request_sema->count(), count);
+            //    if (state != thread_state::run) {
+            //        LOG_TRACE(KERNEL, "You will not sleep");
+            //    }
+            //}
         }
 
         std::int32_t thread::request_count() {
