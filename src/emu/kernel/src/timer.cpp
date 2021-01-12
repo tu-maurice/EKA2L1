@@ -26,9 +26,14 @@
 #include <kernel/timer.h>
 #include <utils/err.h>
 
+#include <vector>
+
 namespace eka2l1 {
     namespace kernel {
         void timer_callback(uint64_t user, int ns_late);
+
+        bool dumped = false;
+        std::vector<std::string> timer_compl_v;
 
         timer::timer(kernel_system *kern, ntimer *timing, std::string name,
             kernel::access_type access)
@@ -46,18 +51,27 @@ namespace eka2l1 {
         }
 
         timer::~timer() {
+            if (!dumped) {
+                LOG_TRACE(KERNEL, "Peepee boo boo");
+                for (auto &line : timer_compl_v) {
+                    LOG_TRACE(KERNEL, "{}", line);
+                }
+
+                dumped = true;
+            }
+
             timing->unschedule_event(callback_type, reinterpret_cast<std::uint64_t>(&info));
         }
 
-        bool timer::after(kernel::thread *requester, epoc::request_status *request_status, std::uint64_t us_signal) {
+        bool timer::after(kernel::thread *requester, eka2l1::ptr<epoc::request_status> sts,
+            std::uint64_t us_signal) {
             if (outstanding) {
                 return false;
             }
 
             outstanding = true;
 
-            info.request_status = request_status;
-            info.own_thread = requester;
+            info.nof = { sts, requester };
             info.own_timer = this;
 
             timing->schedule_event(us_signal, callback_type, reinterpret_cast<std::uint64_t>(&info));
@@ -81,8 +95,7 @@ namespace eka2l1 {
                 return false;
             }
 
-            info.request_status->set(epoc::error_cancel, kern->is_eka1());
-            info.own_thread->signal_request(1, "TIMER CANCEL");
+            info.nof.complete(epoc::error_cancel, "TIMER CANCEL");
 
             // If the timer hasn't finished yet, please unschedule it.
             if (outstanding) {
@@ -102,15 +115,21 @@ namespace eka2l1 {
 
             kernel_system *kern = info->own_timer->get_kernel_object_owner();
             kern->lock();
-
+            
             if (!info->own_timer->request_finish()) {
                 kern->unlock();
                 return;
             }
 
-            info->request_status->set(0, kern->is_eka1());
-            info->own_thread->signal_request(1, "TIMER COMPLETE");
+            if (timer_compl_v.size() == 1200) {
+                timer_compl_v.erase(timer_compl_v.begin());
+            }
 
+            if (info->nof.requester && info->nof.requester->name() == "Bounce") {
+                timer_compl_v.push_back(fmt::format("0x{:X} to notify", info->nof.sts.ptr_address()));
+            }
+
+            info->nof.complete(epoc::error_none, "TIMER COMPL");
             kern->unlock();
         }
     }
